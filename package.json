@@ -1,0 +1,17 @@
+{
+  "name": "lansing-codes-promo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "One YAML file per Lansing Codes event produces every promotional artifact.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "license": "Hippocratic-2.1",
+  "dependencies": {
+    "yaml": "^2.9.1"
+  }
+}
