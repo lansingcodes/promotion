@@ -150,7 +150,7 @@ The default post time is **12:00 PM Eastern** (set in `scripts/lib/config.js`). 
 
 ## Event file schema
 
-One YAML file per event in `events/`, named `YYYY-MM-DD-speaker-slug.yml` (e.g. `2026-10-20-adam-b.yml`). The top half belongs to the **organizer**. The `generated:` block belongs to **`/draft-event`**, and the organizer edits it after review. Start from [`events/_template.yml`](events/_template.yml). Files starting with `_` are ignored by every script.
+One YAML file per event in `events/`, named `YYYY-MM-DD-speaker-slug.yml` (e.g. `2026-10-20-adam-broadbent.yml`). The top half belongs to the **organizer**. The `generated:` block belongs to **`/draft-event`**, and the organizer edits it after review. Start from [`events/_template.yml`](events/_template.yml). Files starting with `_` are ignored by every script.
 
 ```yaml
 # --- Organizer input ---

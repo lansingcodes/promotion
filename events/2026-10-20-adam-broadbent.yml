@@ -4,10 +4,10 @@ start_time: "18:00"
 end_time: "20:00"
 title: "'git diff' My Brain: Working Memory for Claude Code"
 speaker:
-  name: "Adam B."
+  name: "Adam Broadbent"
   title: ""
-  company: ""
-  photo_url: ""
+  company: "MadeLabs"
+  photo_url: "https://media.licdn.com/dms/image/v2/D4E03AQFLiKkEoUnqRg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1711724627121?e=1792022400&v=beta&t=N5-3t_1nbnnnKVOqfBh8b3yruLua_uzZMvR2_ukPheA"
   bio_raw: |
 description_raw: |
   I keep my whole working memory in a folder of markdown files: everyone I work with, every project, every decision I don't want to re-litigate twice. Claude Code writes to it on a schedule, and every morning I review what it wrote as a `git diff`.
@@ -46,14 +46,13 @@ generated:
     Lansing Codes is a nonprofit community for developers, coding enthusiasts, and anyone curious about tech in Greater Lansing. We host a free meetup every month, keep a calendar of every local tech event at lansing.codes, and hang out on Slack at slack.lansing.codes. All events follow our Code of Conduct: https://www.lansing.codes/code-of-conduct
   speaker_bio_short: ""
   captions:
-    announce: "New talk: 'git diff' My Brain. Adam B.'s working memory is a markdown folder Claude Code updates, reviewed each morning as a git diff. Tue, Oct 20, 6:00 PM at Red Cedar Spirits. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #LansingTech #ClaudeCode"
+    announce: "New talk: 'git diff' My Brain. Adam Broadbent's working memory is a markdown folder Claude Code updates, reviewed daily as a git diff. Tue, Oct 20, 6:00 PM at Red Cedar Spirits. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #LansingTech #ClaudeCode"
     week_before: "Three months of Claude Code maintaining a memory folder. One bug: it merged two people into one person, and the diff looked completely normal. See the folder and the rules that came after. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #ClaudeCode"
-    day_before: "Tomorrow: 'git diff' My Brain with Adam B. 6:00 PM at Red Cedar Spirits, East Lansing. Pizza provided, drinks for purchase, no coding required. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #ClaudeCode"
+    day_before: "Tomorrow: 'git diff' My Brain with Adam Broadbent of MadeLabs. 6:00 PM at Red Cedar Spirits, East Lansing. Pizza provided, drinks for purchase, no coding required. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #ClaudeCode"
     day_of: "Tonight at 6:00 PM: a live terminal tour of a Claude Code memory folder, with half the time saved for your questions. Red Cedar Spirits, East Lansing. https://www.meetup.com/lansing-codes-meetup/events/316589667/ #LansingCodes #ClaudeCode"
-  email_blurb: "Adam B. keeps a working memory in a folder of markdown files that Claude Code updates on a schedule, then reviews every change as a git diff. Three months in, this is a live tour of the folder, the two routines that maintain it, and the ways it quietly went wrong. No coding needed."
+  email_blurb: "Adam Broadbent of MadeLabs keeps a working memory in a folder of markdown files that Claude Code updates on a schedule, then reviews every change as a git diff. Three months in, this is a live tour of the folder, the two routines that maintain it, and the ways it quietly went wrong. No coding needed."
   gaps:
-    - "Speaker listed only as \"Adam B.\": confirm the name to use on the card and in posts"
-    - "Speaker title/company unknown: card line will be blank"
-    - "No speaker photo for the Canva card"
+    - "Speaker job title unknown: card shows the company only"
     - "No speaker bio: About the speaker section omitted"
-status: draft
+    - "speaker.photo_url is a signed LinkedIn link that expires Oct 15, 2026; existing cards are unaffected, but re-running /make-cards after that needs a fresh link"
+status: approved
