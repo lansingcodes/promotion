@@ -183,6 +183,7 @@ Then: Task 1 → 2 → 3 → 4 → 5.
   - `generated.gaps` (written by `/draft-event`): missing facts the copy had to work around, such as "no speaker bio" or "no speaker photo". The organizer clears it once they've dealt with each one.
 - **2026-09-22 — Fixtures live outside `events/`** (`fixtures/`), so the export and schedule scripts never pick up test data. Every script takes `--events <dir>` so tests can point it at `fixtures/events/`.
 - **2026-09-22 — Mailing list provider is Mailchimp.** The lansing.codes newsletter form posts to `codes.us19.list-manage.com` (see `lansingcodes/www` `components/newsletter.vue`).
+- **2026-09-22: Task 3 uses Canva autofill through the connector**, via the `/make-cards` slash command. Autofill proved to work on this account, so there's no CSV round-trip and photos go in automatically from `speaker.photo_url`. `npm run canva:csv` keeps the plan's CSV bulk-create export as a fallback. It leaves out `speaker_photo`, because Canva reads image URLs in a CSV as text. The Meetup-sized **banner** (1640×924) was added alongside the square and story.
 - **Phase two pointer:** lansing.codes already aggregates other local groups' events through [`lansingcodes/api`](https://github.com/lansingcodes/api) (Firestore). [`lansingcodes/newsletter-events`](https://github.com/lansingcodes/newsletter-events) already turns that feed into newsletter-ready lists. Phase-two "Around town" ingestion should start from those projects rather than scraping Meetup.
 
 ---

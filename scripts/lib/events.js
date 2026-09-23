@@ -1,5 +1,6 @@
 // Shared helpers for reading and writing event files.
-import { readFileSync, writeFileSync } from 'node:fs'
+import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { basename, join } from 'node:path'
 import { isDeepStrictEqual } from 'node:util'
 import YAML, { Scalar } from 'yaml'
 
@@ -29,6 +30,23 @@ export const GENERATED_KEYS = [
   'email_blurb',
   'gaps',
 ]
+
+export function readEvent(path) {
+  return readEventDoc(path).toJS()
+}
+
+// Every event file in `dir`, sorted by filename (which starts with the date).
+// Files starting with "_" (templates) are skipped.
+export function listEventFiles(dir) {
+  return readdirSync(dir)
+    .filter((f) => /\.ya?ml$/.test(f) && !f.startsWith('_'))
+    .sort()
+    .map((f) => join(dir, f))
+}
+
+export const isExportable = (e) => e.status === 'approved' || e.status === 'published'
+
+export const eventStem = (path) => basename(path).replace(/\.ya?ml$/, '')
 
 export function readEventDoc(path) {
   const doc = YAML.parseDocument(readFileSync(path, 'utf8'))
