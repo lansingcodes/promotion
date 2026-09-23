@@ -50,8 +50,9 @@ export const BUFFER = {
   // Buffer channel IDs to post to. Empty = every connected channel in the organization.
   channelIds: [],
   // Buffer fetches images when the post publishes, so they need a stable public URL.
-  // Set this to a folder URL that serves out/images/*.png, e.g. "https://example.org/cards/".
+  // /make-cards saves cards to cards/ in this repo, which is public on GitHub, so
+  // each card is served from here once it's committed and pushed.
   // Empty = text-only posts; attach the image in Buffer by hand.
-  imageBaseUrl: '',
+  imageBaseUrl: 'https://raw.githubusercontent.com/lansingcodes/promotion/main/cards/',
   image: 'square', // which card from /make-cards to attach
 }

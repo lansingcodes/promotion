@@ -17,7 +17,7 @@ test('local times carry the right offset on both sides of DST', () => {
 })
 
 test('plans four posts at noon Detroit time', () => {
-  const { posts, skipped } = planPosts(event, 'stem', { now: at('2026-09-22T12:00:00Z') })
+  const { posts, skipped } = planPosts(event, 'stem', { now: at('2026-09-22T12:00:00Z'), imageBaseUrl: '' })
   assert.deepEqual(skipped, [])
   assert.deepEqual(
     posts.map((p) => [p.key, p.due_at]),

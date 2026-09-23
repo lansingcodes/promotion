@@ -1,10 +1,10 @@
 ---
 description: Generate an event's speaker cards (square, story, banner) in Canva and download the PNGs
 argument-hint: events/YYYY-MM-DD-speaker-slug.yml [--photo <url>] [--preview]
-allowed-tools: Read, Bash(node scripts/export_canva.js:*), Bash(curl:*), Bash(mkdir -p out/images)
+allowed-tools: Read, Bash(node scripts/export_canva.js:*), Bash(curl:*), Bash(mkdir -p cards), Bash(git add cards/*), Bash(git commit:*), Bash(git push)
 ---
 
-Create this event's speaker cards in Canva from the templates, then save the PNGs to `out/images/`. Arguments: `$ARGUMENTS`.
+Create this event's speaker cards in Canva from the templates, then save the PNGs to `cards/`. That folder is committed and public on GitHub, which gives Buffer a permanent image link. Arguments: `$ARGUMENTS`.
 
 This uses the **Canva connector's** tools: `upload-asset-from-url`, `autofill-design`, `read-design`, `edit-design`, `move-item-to-folder`, `get-export-formats` and `export-design`. If the connector isn't connected, stop and tell the user to either connect it or use the fallback: `npm run canva:csv` plus Canva bulk create.
 
@@ -52,7 +52,7 @@ For each entry in `templates` (square, story, banner):
 
 ## 4. Download PNGs
 
-Run `mkdir -p out/images`. For each card:
+Run `mkdir -p cards`. For each card:
 
 1. Call `get-export-formats` and confirm that `png` is supported.
 2. Call `export-design` as PNG.
@@ -66,4 +66,5 @@ Give a short table: template, Canva edit link, local PNG path. Then add:
 
 - Whether a real photo was used or the logo placeholder.
 - Anything odd from the visual check.
-- Next step: run `npm run schedule` and attach these images in Buffer. The Meetup event image is the banner.
+- Commit and push the PNGs (`git add cards/<stem>-*.png`, commit, `git push`) so Buffer can fetch them. Ask the user before pushing. Check that `https://raw.githubusercontent.com/lansingcodes/promotion/main/cards/<stem>-square.png` loads.
+- Next step: `/schedule-posts <event>`. It attaches the square card automatically. The Meetup event image is the banner.

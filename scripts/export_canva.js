@@ -44,7 +44,7 @@ export function fields(path, { allowDraft = false } = {}) {
     templates: Object.fromEntries(
       Object.entries(CANVA_TEMPLATES).map(([name, t]) => [
         name,
-        { ...t, title: `${stem} – ${name}`, image: `out/images/${stem}-${name}.png` },
+        { ...t, title: `${stem} – ${name}`, image: `cards/${stem}-${name}.png` },
       ]),
     ),
     // Canva may reject an empty string, so blank text fields become a single space.

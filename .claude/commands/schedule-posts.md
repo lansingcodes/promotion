@@ -1,7 +1,7 @@
 ---
 description: Create an event's four social posts in Buffer (as dated drafts) through the Buffer connector
 argument-hint: events/YYYY-MM-DD-speaker-slug.yml
-allowed-tools: Read, Bash(node scripts/schedule.js:*)
+allowed-tools: Read, Bash(node scripts/schedule.js:*), Bash(curl -sSIL:*)
 ---
 
 Create the social posts for `$ARGUMENTS` in Buffer.
@@ -30,6 +30,8 @@ Call `list_channels` with `organization_id`. Use the channels whose IDs are in `
 
 ## 3. Create the posts
 
+If the posts have an `image`, first check that the link loads: `curl -sSIL <url>` should end in `200` with `content-type: image/png`. If it doesn't, the card hasn't been pushed to GitHub yet. Tell the user to commit and push `cards/`, or, if they'd rather, create the posts without the image and say so.
+
 For each post, and for each chosen channel that isn't already in the post's `created` list:
 
 1. Call `create_post` with:
@@ -51,5 +53,4 @@ After the first post, call `get_post` on it and confirm that its `dueAt` matches
 Give a short table: post, date and time, channel, and status (created, already existed, or skipped). Then add:
 
 - Any `note` or `skipped` entries from the plan.
-- If posts have no image: "Attach `out/images/<stem>-square.png` to each draft in Buffer."
 - Next step: review the drafts in Buffer and schedule them.

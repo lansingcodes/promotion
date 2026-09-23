@@ -20,7 +20,7 @@ events/YYYY-MM-DD-speaker-slug.yml      ← organizer fills in the top half
         │
 generated: block filled in              ← organizer reviews the git diff, edits, sets status: approved
         │
-        ├──▶ /make-cards <file> → Canva autofill → out/images/<stem>-{square,story,banner}.png
+        ├──▶ /make-cards <file> → Canva autofill → cards/<stem>-{square,story,banner}.png
         ├──▶ /schedule-posts <file> → Buffer connector → dated drafts, one per post per channel
         ├──▶ copy generated.description_long               → paste into the Meetup event
         └──▶ npm run digest -- 2026-10 → out/digest-2026-10.html/.txt → Mailchimp, sent on the 1st
@@ -35,15 +35,14 @@ generated: block filled in              ← organizer reviews the git diff, edit
 1. **Speaker confirms.** Copy `events/_template.yml` to `events/YYYY-MM-DD-speaker-slug.yml`. Paste what the speaker sent into `description_raw` and `speaker.bio_raw` exactly as sent. Don't clean it up. Confirm date, times and venue.
 2. **Draft.** In Claude Code, run `/draft-event events/<file>.yml`. It fills in `generated:` and nothing else.
 3. **Review.** Read the `git diff`. Edit anything you like directly in the YAML. Check `generated.gaps` and either get the missing info from the speaker or accept the gap. Then set `status: approved` and commit.
-4. **Images.** Run `/make-cards events/<file>.yml` (add `--photo <image-url>` to set the speaker photo; it's saved to `speaker.photo_url`). It autofills the square, story and banner templates in Canva through the Canva connector, files the designs in the Canva folder "Lansing Codes Event Cards", and saves `out/images/<event-file-stem>-{square,story,banner}.png`. Add `--preview` to see cards before the copy is approved. If a speaker photo URL is set, it's used; otherwise the photo circle shows the Lansing Codes logo.
+4. **Images.** Run `/make-cards events/<file>.yml` (add `--photo <image-url>` to set the speaker photo; it's saved to `speaker.photo_url`). It autofills the square, story and banner templates in Canva through the Canva connector, files the designs in the Canva folder "Lansing Codes Event Cards", and saves `cards/<event-file-stem>-{square,story,banner}.png`. Commit and push those PNGs: the repo is public at github.com/lansingcodes/promotion, so that's what gives Buffer a permanent image link. Add `--preview` to see cards before the copy is approved. If a speaker photo URL is set, it's used; otherwise the photo circle shows the Lansing Codes logo.
    *Fallback without the connector:* `npm run canva:csv` writes `out/canva-bulk.csv` (approved events; `-- --from/--to YYYY-MM-DD` to filter). Upload it to Canva bulk create on the templates; columns auto-match the field names. Drop photos in by hand.
 5. **Social.**
    - Run `npm run schedule -- plan events/<file>.yml` to check the four posts and their times. It makes no network calls.
    - Then run `/schedule-posts events/<file>.yml`. Through the Buffer connector (Claude settings → Connectors → Buffer), it creates each post as a **draft** with its date set, on every connected channel. To limit it to certain channels, set `BUFFER.channelIds` in `scripts/lib/config.js`.
    - Each Buffer post ID is written back to the event file under `buffer_posts:`, so a rerun only fills in what's missing. For example, after you connect a new channel, rerun it to add that channel's posts.
-   - In Buffer, attach the square card (`out/images/<stem>-square.png`) to each draft, review it, and schedule it.
-   - **Images:** Buffer fetches an image when the post goes out, so an attached image needs a permanent public link. Canva's download links expire after about a day. Until `BUFFER.imageBaseUrl` points at hosted copies of the cards, posts are text-only.
-6. **Meetup.** Paste `generated.description_long` into the Meetup event and use the banner PNG as the event image. Once it's live, set `status: published`.
+   - Each post gets the square card attached, served from `BUFFER.imageBaseUrl` (the `cards/` folder on GitHub). Buffer fetches the image when the post goes out, so **push the cards before running this**. Then review the drafts in Buffer and schedule them.
+6. **Meetup.** Paste `generated.description_long` into the Meetup event and use `cards/<stem>-banner.png` as the event image. Once it's live, set `status: published`.
 7. **Email.** On the 1st of the month, run `npm run digest -- YYYY-MM`, paste the HTML into Mailchimp, send a test to yourself, then send it.
 
 ---
@@ -225,6 +224,7 @@ status: draft                 # draft | approved | published
 CLAUDE.md                  this file
 plan.md                    plan, open questions, decisions log
 events/                    one YAML per real event (+ _template.yml)
+cards/                     speaker card PNGs from /make-cards (committed; public image URLs for Buffer)
 fixtures/                  test data — never read by default
   events/                  sample event files for script tests
   2026-10-20-git-diff-my-brain/   the hand-run acceptance fixture
@@ -243,4 +243,5 @@ out/                       generated files (gitignored)
 - Script output is deterministic: same input, same bytes. Sort by date, then filename.
 - Anything tied to an outside tool's format goes in `scripts/lib/config.js`, not scattered through the code. That covers Canva template IDs and field names, the Buffer organization and channels, timezone and post times. If you rename a field in a Canva template, rename it in `CANVA_FIELDS` too.
 - Times are **America/Detroit**.
-- Don't commit anything in `out/`.
+- Don't commit anything in `out/`. `cards/` is the exception: its PNGs are committed on purpose.
+- **This repo is public.** Never commit API keys, tokens, or anything a speaker hasn't agreed to make public.

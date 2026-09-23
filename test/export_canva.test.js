@@ -45,7 +45,7 @@ test('fields builds the autofill payload', () => {
   })
   assert.equal(f.photo_url, null)
   assert.equal(f.templates.square.title, '2026-11-17-sam-rivera – square')
-  assert.equal(f.templates.story.image, 'out/images/2026-11-17-sam-rivera-story.png')
+  assert.equal(f.templates.story.image, 'cards/2026-11-17-sam-rivera-story.png')
 })
 
 test('csv includes only approved events, skips _ files, and quotes cells', () => {
