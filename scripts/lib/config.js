@@ -32,3 +32,26 @@ export const CANVA_FIELDS = {
 
 // Image fields are filled with an uploaded Canva asset, not text.
 export const CANVA_IMAGE_FIELDS = ['speaker_photo']
+
+// Posting cadence (CLAUDE.md "Posting cadence"): caption key → days before the event.
+export const POST_SCHEDULE = [
+  { key: 'announce', daysBefore: 21 },
+  { key: 'week_before', daysBefore: 7 },
+  { key: 'day_before', daysBefore: 1 },
+  { key: 'day_of', daysBefore: 0 },
+]
+export const POST_TIME = '12:00' // local time in TIMEZONE
+
+// Buffer, via the Buffer connector in Claude Code (/schedule-posts).
+export const BUFFER = {
+  organizationId: '6ab324b8575c5b1e4fdcfc46', // "My organization"
+  // Posts land in Buffer as drafts for a final look, with their dates set.
+  saveAsDraft: true,
+  // Buffer channel IDs to post to. Empty = every connected channel in the organization.
+  channelIds: [],
+  // Buffer fetches images when the post publishes, so they need a stable public URL.
+  // Set this to a folder URL that serves out/images/*.png, e.g. "https://example.org/cards/".
+  // Empty = text-only posts; attach the image in Buffer by hand.
+  imageBaseUrl: '',
+  image: 'square', // which card from /make-cards to attach
+}

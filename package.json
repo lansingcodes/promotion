@@ -9,7 +9,8 @@
   },
   "scripts": {
     "test": "node --test",
-    "canva:csv": "node scripts/export_canva.js csv"
+    "canva:csv": "node scripts/export_canva.js csv",
+    "schedule": "node scripts/schedule.js"
   },
   "license": "Hippocratic-2.1",
   "dependencies": {

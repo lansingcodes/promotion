@@ -56,3 +56,24 @@ generated:
     - "No speaker bio: About the speaker section omitted"
     - "speaker.photo_url is a signed LinkedIn link that expires Oct 15, 2026; existing cards are unaffected, but re-running /make-cards after that needs a fresh link"
 status: approved
+buffer_posts:
+  announce:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ab3be40e703d0a1edbf2077
+      due_at: 2026-09-29T12:00:00-04:00
+  week_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ab3be499101da39d1ff1de6
+      due_at: 2026-10-13T12:00:00-04:00
+  day_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ab3be504fc065cee67a413f
+      due_at: 2026-10-19T12:00:00-04:00
+  day_of:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ab3be59398c0b255fae601b
+      due_at: 2026-10-20T12:00:00-04:00

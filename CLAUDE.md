@@ -1,8 +1,8 @@
 # Lansing Codes Promo Pipeline
 
-This repo turns one YAML file per event into every promotional artifact Lansing Codes needs: the Meetup listing, the speaker card images (via Canva autofill), a month of social posts (via Buffer bulk upload), and the monthly email digest (pasted into Mailchimp).
+This repo turns one YAML file per event into every promotional artifact Lansing Codes needs: the Meetup listing, the speaker card images (via Canva autofill), a month of social posts (via the Buffer connector), and the monthly email digest (pasted into Mailchimp).
 
-Nothing here posts anything automatically. Scripts write files to `out/` (and `/make-cards` creates designs in your Canva account). A person reviews them and uploads them by hand.
+Nothing here publishes on its own. Scripts write files to `out/`, `/make-cards` creates designs in your Canva account, and `/schedule-posts` creates **drafts** in Buffer. A person reviews everything before it goes live.
 
 See [plan.md](plan.md) for the full plan, the open questions and the decisions log.
 
@@ -21,12 +21,12 @@ events/YYYY-MM-DD-speaker-slug.yml      ← organizer fills in the top half
 generated: block filled in              ← organizer reviews the git diff, edits, sets status: approved
         │
         ├──▶ /make-cards <file> → Canva autofill → out/images/<stem>-{square,story,banner}.png
-        ├──▶ npm run schedule   → out/buffer-schedule.csv   → Buffer bulk upload (with the PNGs)
+        ├──▶ /schedule-posts <file> → Buffer connector → dated drafts, one per post per channel
         ├──▶ copy generated.description_long               → paste into the Meetup event
         └──▶ npm run digest -- 2026-10 → out/digest-2026-10.html/.txt → Mailchimp, sent on the 1st
 ```
 
-> **Build status (2026-09-22):** Tasks 1–3 are done: the scaffold, this file, the schema, the fixtures, `/draft-event` and `/make-cards`. The `npm run schedule | digest` scripts (tasks 4–5) are **not built yet**. The steps below describe the target workflow.
+> **Build status (2026-09-22):** Tasks 1–4 are done: the scaffold, this file, the schema, the fixtures, `/draft-event`, `/make-cards` and `/schedule-posts`. The `npm run digest` script (task 5) is **not built yet**. The steps below describe the target workflow.
 >
 > **How `/draft-event` works:** Claude writes the copy, and [`scripts/draft_event.js`](scripts/draft_event.js) is the only thing that writes to the file. The script rewrites only the text from `generated:` down, so everything above it stays byte-for-byte as you wrote it. It rejects copy that breaks the length or hashtag limits, warns on avoided words ([`scripts/lib/voice.js`](scripts/lib/voice.js); keep that list in sync with the one below), and resets `status` to `draft`.
 
@@ -37,7 +37,12 @@ generated: block filled in              ← organizer reviews the git diff, edit
 3. **Review.** Read the `git diff`. Edit anything you like directly in the YAML. Check `generated.gaps` and either get the missing info from the speaker or accept the gap. Then set `status: approved` and commit.
 4. **Images.** Run `/make-cards events/<file>.yml` (add `--photo <image-url>` to set the speaker photo; it's saved to `speaker.photo_url`). It autofills the square, story and banner templates in Canva through the Canva connector, files the designs in the Canva folder "Lansing Codes Event Cards", and saves `out/images/<event-file-stem>-{square,story,banner}.png`. Add `--preview` to see cards before the copy is approved. If a speaker photo URL is set, it's used; otherwise the photo circle shows the Lansing Codes logo.
    *Fallback without the connector:* `npm run canva:csv` writes `out/canva-bulk.csv` (approved events; `-- --from/--to YYYY-MM-DD` to filter). Upload it to Canva bulk create on the templates; columns auto-match the field names. Drop photos in by hand.
-5. **Social.** Run `npm run schedule` and upload `out/buffer-schedule.csv` to Buffer. Buffer takes one channel per upload, so repeat for each channel and choose "Save as Drafts". Its `Image URL` column needs a public URL, so either host the PNGs first or attach them in Buffer by hand. Then review the drafts.
+5. **Social.**
+   - Run `npm run schedule -- plan events/<file>.yml` to check the four posts and their times. It makes no network calls.
+   - Then run `/schedule-posts events/<file>.yml`. Through the Buffer connector (Claude settings → Connectors → Buffer), it creates each post as a **draft** with its date set, on every connected channel. To limit it to certain channels, set `BUFFER.channelIds` in `scripts/lib/config.js`.
+   - Each Buffer post ID is written back to the event file under `buffer_posts:`, so a rerun only fills in what's missing. For example, after you connect a new channel, rerun it to add that channel's posts.
+   - In Buffer, attach the square card (`out/images/<stem>-square.png`) to each draft, review it, and schedule it.
+   - **Images:** Buffer fetches an image when the post goes out, so an attached image needs a permanent public link. Canva's download links expire after about a day. Until `BUFFER.imageBaseUrl` points at hosted copies of the cards, posts are text-only.
 6. **Meetup.** Paste `generated.description_long` into the Meetup event and use the banner PNG as the event image. Once it's live, set `status: published`.
 7. **Email.** On the 1st of the month, run `npm run digest -- YYYY-MM`, paste the HTML into Mailchimp, send a test to yourself, then send it.
 
@@ -227,7 +232,7 @@ templates/email.html       monthly digest (HTML)
 templates/email.txt        monthly digest (plain text)
 scripts/                   Node CLI scripts (export_canva, schedule, digest)
 scripts/lib/               shared helpers + config (column mappings, post times)
-.claude/commands/          /draft-event, /make-cards
+.claude/commands/          /draft-event, /make-cards, /schedule-posts
 out/                       generated files (gitignored)
 ```
 
@@ -236,6 +241,6 @@ out/                       generated files (gitignored)
 - **Node 22+, ES modules, one dependency (`yaml`).** Add others only if they save real effort. Tests use `node --test`.
 - Every script accepts `--events <dir>` (default `events/`) so tests can run against `fixtures/events/`.
 - Script output is deterministic: same input, same bytes. Sort by date, then filename.
-- Anything tied to an outside tool's format goes in `scripts/lib/config.js`, not scattered through the code. That covers Canva template IDs and field names, Buffer columns, timezone and post times. If you rename a field in a Canva template, rename it in `CANVA_FIELDS` too.
+- Anything tied to an outside tool's format goes in `scripts/lib/config.js`, not scattered through the code. That covers Canva template IDs and field names, the Buffer organization and channels, timezone and post times. If you rename a field in a Canva template, rename it in `CANVA_FIELDS` too.
 - Times are **America/Detroit**.
 - Don't commit anything in `out/`.
