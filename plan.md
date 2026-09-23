@@ -206,7 +206,8 @@ Items marked **unverified** need a real test before the task that depends on the
   3. keep the photo as a fixed frame the organizer fills.
 
   Start with option 1 and see whether it hurts.
-- **Connect API Autofill requires Canva Enterprise**, for both the developer and every user. It's not available on Canva for Nonprofits (Pro/Teams). **The manual bulk-create step stays.**
+- **Connect API Autofill requires Canva Enterprise** according to Canva's docs, for both the developer and every user.
+- **Update 2026-09-22, tested:** autofill *does* work on this account through the Canva connector in Claude Code. `autofill-design` filled the banner template from a text payload and produced a correct card. So Task 3 can generate cards directly from Claude, with no CSV and no bulk create, and the photo can go in via `upload-asset-from-url` from `speaker.photo_url`. Keep the CSV export as the fallback in case the connector route stops working. The templates and fields are in `fixtures/2026-10-20-git-diff-my-brain/canva-fields.md`.
 
 ### Meetup (affects the "paste into Meetup" step)
 - The GraphQL API has `createEvent` and `editEvent` (draft or publish), using OAuth 2.

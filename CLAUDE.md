@@ -26,7 +26,9 @@ generated: block filled in              ← organizer reviews the git diff, edit
         └──▶ npm run digest -- 2026-10 → out/digest-2026-10.html/.txt → Mailchimp, sent on the 1st
 ```
 
-> **Build status (2026-09-22):** Task 1 is done: the scaffold, this file, the schema and the fixtures. `/draft-event` (task 2) and the `npm run canva | schedule | digest` scripts (tasks 3–5) are **not built yet**. The steps below describe the target workflow.
+> **Build status (2026-09-22):** Tasks 1 and 2 are done: the scaffold, this file, the schema, the fixtures and `/draft-event`. The `npm run canva | schedule | digest` scripts (tasks 3–5) are **not built yet**. The steps below describe the target workflow.
+>
+> **How `/draft-event` works:** Claude writes the copy, and [`scripts/draft_event.js`](scripts/draft_event.js) is the only thing that writes to the file. The script rewrites only the text from `generated:` down, so everything above it stays byte-for-byte as you wrote it. It rejects copy that breaks the length or hashtag limits, warns on avoided words ([`scripts/lib/voice.js`](scripts/lib/voice.js); keep that list in sync with the one below), and resets `status` to `draft`.
 
 ### Step by step
 

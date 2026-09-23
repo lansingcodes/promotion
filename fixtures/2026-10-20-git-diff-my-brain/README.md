@@ -14,7 +14,7 @@ Event file: [`events/2026-10-20-adam-b.yml`](../../events/2026-10-20-adam-b.yml)
 | Speaker card (story) | `speaker-card-story.png` | ⏳ organizer to add |
 | Social captions as posted | `captions.md` (4 posts, with dates posted) | ⏳ organizer to add |
 | Monthly email (October 2026) | `email-2026-10.html` / `.txt` | ⏳ organizer to add |
-| Canva template field names | `canva-fields.md` | ⏳ organizer to add (needed for task 3) |
+| Canva template field names | [`canva-fields.md`](canva-fields.md) | ✅ templates built 2026-09-22 |
 
 ## Hand-run timeline for this event
 
