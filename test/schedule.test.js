@@ -16,7 +16,7 @@ test('local times carry the right offset on both sides of DST', () => {
   assert.equal(zonedIso('2026-11-10', '12:00', 'America/Detroit'), '2026-11-10T12:00:00-05:00')
 })
 
-test('plans four posts at noon Detroit time', () => {
+test('plans four posts at noon Detroit time, day-of at 9 AM', () => {
   const { posts, skipped } = planPosts(event, 'stem', { now: at('2026-09-22T12:00:00Z'), imageBaseUrl: '' })
   assert.deepEqual(skipped, [])
   assert.deepEqual(
@@ -25,7 +25,7 @@ test('plans four posts at noon Detroit time', () => {
       ['announce', '2026-10-27T12:00:00-04:00'],
       ['week_before', '2026-11-10T12:00:00-05:00'],
       ['day_before', '2026-11-16T12:00:00-05:00'],
-      ['day_of', '2026-11-17T12:00:00-05:00'],
+      ['day_of', '2026-11-17T09:00:00-05:00'],
     ],
   )
   assert.equal(posts[0].text, event.generated.captions.announce)

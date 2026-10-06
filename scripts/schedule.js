@@ -18,14 +18,14 @@ export function planPosts(event, stem, { now = new Date(), imageBaseUrl = BUFFER
   const skipped = []
   const image = imageBaseUrl ? new URL(`${stem}-${BUFFER.image}.png`, imageBaseUrl).href : null
 
-  for (const { key, daysBefore } of POST_SCHEDULE) {
+  for (const { key, daysBefore, time = POST_TIME } of POST_SCHEDULE) {
     const text = event.generated?.captions?.[key]
     if (!text) throw new Error(`generated.captions.${key} is empty; run /draft-event first`)
 
     let date = addDays(event.date, -daysBefore)
     let note = null
 
-    if (zonedToUtc(date, POST_TIME, TIMEZONE) <= now) {
+    if (zonedToUtc(date, time, TIMEZONE) <= now) {
       if (key !== 'announce') {
         skipped.push({ key, reason: `${dateShort(date)} has already passed` })
         continue
@@ -42,7 +42,8 @@ export function planPosts(event, stem, { now = new Date(), imageBaseUrl = BUFFER
     posts.push({
       key,
       date,
-      due_at: zonedIso(date, POST_TIME, TIMEZONE), // local time with offset, as Buffer's connector wants
+      time,
+      due_at: zonedIso(date, time, TIMEZONE), // local time with offset, as Buffer's connector wants
       text,
       image,
       note,
@@ -80,7 +81,7 @@ export function record(path, { key, channelId, service, postId, dueAt }) {
 function printPlan({ posts, skipped }) {
   for (const p of posts) {
     const done = p.created.length ? `  ✓ in Buffer on ${p.created.map((c) => c.service).join(', ')}` : ''
-    console.log(`\n${p.key}: ${dateShort(p.date)} ${POST_TIME} (${p.due_at})${p.note ? `  ⚠ ${p.note}` : ''}${done}`)
+    console.log(`\n${p.key}: ${dateShort(p.date)} ${p.time} (${p.due_at})${p.note ? `  ⚠ ${p.note}` : ''}${done}`)
     console.log(`  ${p.text}`)
     console.log(`  image: ${p.image ?? '(none: attach the square card in Buffer)'}`)
   }

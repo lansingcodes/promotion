@@ -34,13 +34,15 @@ export const CANVA_FIELDS = {
 export const CANVA_IMAGE_FIELDS = ['speaker_photo']
 
 // Posting cadence (CLAUDE.md "Posting cadence"): caption key → days before the event.
+// `time` overrides POST_TIME for one post. Day-of goes out in the morning so
+// people see it before they plan their evening.
 export const POST_SCHEDULE = [
   { key: 'announce', daysBefore: 21 },
   { key: 'week_before', daysBefore: 7 },
   { key: 'day_before', daysBefore: 1 },
-  { key: 'day_of', daysBefore: 0 },
+  { key: 'day_of', daysBefore: 0, time: '09:00' },
 ]
-export const POST_TIME = '12:00' // local time in TIMEZONE
+export const POST_TIME = '12:00' // default local time in TIMEZONE
 
 // Buffer, via the Buffer connector in Claude Code (/schedule-posts).
 export const BUFFER = {

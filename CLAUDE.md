@@ -148,7 +148,7 @@ Buffer sends one caption to every connected channel. Each caption in `generated.
 | `day_before` | 1 day before | "Tomorrow": time, venue, food. Short. |
 | `day_of` | Event day | "Tonight": time and venue. The organizer may replace this with a post-event photo instead. |
 
-The default post time is **12:00 PM Eastern** (set in `scripts/lib/config.js`). If an event is confirmed late and the announce date has already passed, `npm run schedule` moves the announce post to tomorrow and flags it in its output.
+The default post time is **12:00 PM Eastern**; the `day_of` post goes out at **9:00 AM** so people see it before they plan their evening. Both are set in `POST_SCHEDULE` and `POST_TIME` in `scripts/lib/config.js`. If an event is confirmed late and the announce date has already passed, `npm run schedule` moves the announce post to tomorrow and flags it in its output.
 
 ---
 
