@@ -148,7 +148,17 @@ Buffer sends one caption to every connected channel. Each caption in `generated.
 | `day_before` | 1 day before | "Tomorrow": time, venue, food. Short. |
 | `day_of` | Event day | "Tonight": time and venue. The organizer may replace this with a post-event photo instead. |
 
-The default post time is **12:00 PM Eastern**; the `day_of` post goes out at **9:00 AM** so people see it before they plan their evening. Both are set in `POST_SCHEDULE` and `POST_TIME` in `scripts/lib/config.js`. If an event is confirmed late and the announce date has already passed, `npm run schedule` moves the announce post to tomorrow and flags it in its output.
+Post times depend on the platform, from Buffer's 2026 best-time-to-post studies (Eastern time):
+
+| Platform | Most posts | `day_of` |
+|---|---|---|
+| X | 10:00 AM | 9:00 AM |
+| Bluesky | 8:00 PM | 9:00 AM |
+| LinkedIn | 4:00 PM | 12:00 PM |
+| Instagram | 7:00 PM | 12:00 PM |
+| Anything else | 12:00 PM | 9:00 AM |
+
+Day-of posts can't wait for an evening peak when the event starts at 6 PM, so they go out earlier. The times live in `POST_TIMES` in `scripts/lib/config.js`; adjust them once our own Buffer analytics show when our followers are active. If an event is confirmed late and the announce date has already passed, `npm run schedule` moves the announce post to tomorrow and flags it in its output.
 
 ---
 

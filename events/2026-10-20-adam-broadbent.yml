@@ -75,15 +75,15 @@ buffer_posts:
     - channel_id: 6ab3264cea19ca0bdebe8c27
       service: twitter
       post_id: 6ab3be504fc065cee67a413f
-      due_at: 2026-10-19T12:00:00-04:00
+      due_at: 2026-10-19T10:00:00-04:00
     - channel_id: 6ac4427f6a5c39ccb628823e
       service: bluesky
       post_id: 6ac45178ae999c0b7ff81520
-      due_at: 2026-10-19T12:00:00-04:00
+      due_at: 2026-10-19T20:00:00-04:00
     - channel_id: 6ac443b26a5c39ccb6288a25
       service: bluesky
       post_id: 6ac4519eb0e0485fb46609b9
-      due_at: 2026-10-19T12:00:00-04:00
+      due_at: 2026-10-19T20:00:00-04:00
   day_of:
     - channel_id: 6ab3264cea19ca0bdebe8c27
       service: twitter

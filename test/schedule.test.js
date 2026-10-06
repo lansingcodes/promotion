@@ -32,6 +32,35 @@ test('plans four posts at noon Detroit time, day-of at 9 AM', () => {
   assert.equal(posts[0].image, null)
 })
 
+test('each service gets its own best time', () => {
+  const { posts } = planPosts(event, 'stem', { now: at('2026-09-22T12:00:00Z'), imageBaseUrl: '' })
+  const byKey = Object.fromEntries(posts.map((p) => [p.key, p.due_at_by_service]))
+  assert.deepEqual(byKey.day_before, {
+    twitter: '2026-11-16T10:00:00-05:00',
+    bluesky: '2026-11-16T20:00:00-05:00',
+    linkedin: '2026-11-16T16:00:00-05:00',
+    instagram: '2026-11-16T19:00:00-05:00',
+    other: '2026-11-16T12:00:00-05:00',
+  })
+  assert.deepEqual(byKey.day_of, {
+    twitter: '2026-11-17T09:00:00-05:00',
+    bluesky: '2026-11-17T09:00:00-05:00',
+    linkedin: '2026-11-17T12:00:00-05:00',
+    instagram: '2026-11-17T12:00:00-05:00',
+    other: '2026-11-17T09:00:00-05:00',
+  })
+  assert.ok(posts.every((p) => p.passed_services.length === 0))
+})
+
+test('a service whose time has passed today is left out; the post stays for the rest', () => {
+  // 1 PM on the day before: X (10 AM) and the noon fallback are gone, the evening slots are not.
+  const { posts, skipped } = planPosts(event, 'stem', { now: at('2026-11-16T18:00:00Z') })
+  const dayBefore = posts.find((p) => p.key === 'day_before')
+  assert.deepEqual(dayBefore.passed_services, ['twitter', 'other'])
+  assert.deepEqual(Object.keys(dayBefore.due_at_by_service), ['bluesky', 'linkedin', 'instagram'])
+  assert.ok(!skipped.some((s) => s.key === 'day_before'))
+})
+
 test('late confirmation moves announce to tomorrow and notes it', () => {
   const { posts, skipped } = planPosts(event, 'stem', { now: at('2026-11-03T15:00:00Z') })
   assert.equal(posts[0].key, 'announce')

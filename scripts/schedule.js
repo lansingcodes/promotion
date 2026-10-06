@@ -9,23 +9,27 @@
 //   node scripts/schedule.js record <event.yml> <post-key> <channel-id> <service> <buffer-post-id> <due-at>
 //     Save a created Buffer post under buffer_posts: in the event file, so reruns skip it.
 import { pathToFileURL } from 'node:url'
-import { BUFFER, POST_SCHEDULE, POST_TIME, TIMEZONE } from './lib/config.js'
+import { BUFFER, POST_SCHEDULE, POST_TIMES, TIMEZONE, postTime } from './lib/config.js'
 import { eventStem, isExportable, readEventDoc, writeGeneratedSection } from './lib/events.js'
 import { addDays, dateShort, todayIn, zonedIso, zonedToUtc } from './lib/format.js'
+
+const SERVICES = Object.keys(POST_TIMES).filter((s) => s !== 'other')
 
 export function planPosts(event, stem, { now = new Date(), imageBaseUrl = BUFFER.imageBaseUrl } = {}) {
   const posts = []
   const skipped = []
   const image = imageBaseUrl ? new URL(`${stem}-${BUFFER.image}.png`, imageBaseUrl).href : null
 
-  for (const { key, daysBefore, time = POST_TIME } of POST_SCHEDULE) {
+  for (const { key, daysBefore } of POST_SCHEDULE) {
     const text = event.generated?.captions?.[key]
     if (!text) throw new Error(`generated.captions.${key} is empty; run /draft-event first`)
 
     let date = addDays(event.date, -daysBefore)
     let note = null
+    const time = postTime(key, 'other')
+    const allPassed = (d) => [time, ...SERVICES.map((s) => postTime(key, s))].every((t) => zonedToUtc(d, t, TIMEZONE) <= now)
 
-    if (zonedToUtc(date, time, TIMEZONE) <= now) {
+    if (allPassed(date)) {
       if (key !== 'announce') {
         skipped.push({ key, reason: `${dateShort(date)} has already passed` })
         continue
@@ -39,11 +43,23 @@ export function planPosts(event, stem, { now = new Date(), imageBaseUrl = BUFFER
       note = `confirmed late: moved from ${dateShort(date)} to ${dateShort(tomorrow)}`
       date = tomorrow
     }
+
+    // Each service has its own best time; one that has already passed today is left out.
+    const dueAtByService = {}
+    const passedServices = []
+    for (const service of [...SERVICES, 'other']) {
+      const t = postTime(key, service)
+      if (zonedToUtc(date, t, TIMEZONE) <= now) passedServices.push(service)
+      else dueAtByService[service] = zonedIso(date, t, TIMEZONE)
+    }
+
     posts.push({
       key,
       date,
       time,
-      due_at: zonedIso(date, time, TIMEZONE), // local time with offset, as Buffer's connector wants
+      due_at: zonedIso(date, time, TIMEZONE), // same as due_at_by_service.other; local time with offset, as Buffer wants
+      due_at_by_service: dueAtByService,
+      passed_services: passedServices,
       text,
       image,
       note,
@@ -81,7 +97,10 @@ export function record(path, { key, channelId, service, postId, dueAt }) {
 function printPlan({ posts, skipped }) {
   for (const p of posts) {
     const done = p.created.length ? `  ✓ in Buffer on ${p.created.map((c) => c.service).join(', ')}` : ''
-    console.log(`\n${p.key}: ${dateShort(p.date)} ${p.time} (${p.due_at})${p.note ? `  ⚠ ${p.note}` : ''}${done}`)
+    console.log(`\n${p.key}: ${dateShort(p.date)}${p.note ? `  ⚠ ${p.note}` : ''}${done}`)
+    const times = Object.entries(p.due_at_by_service).map(([s, iso]) => `${s} ${iso.slice(11, 16)}`)
+    console.log(`  times: ${times.join(', ')}`)
+    if (p.passed_services.length) console.log(`  already passed today: ${p.passed_services.join(', ')}`)
     console.log(`  ${p.text}`)
     console.log(`  image: ${p.image ?? '(none: attach the square card in Buffer)'}`)
   }

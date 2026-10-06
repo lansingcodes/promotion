@@ -16,7 +16,9 @@ Run `node scripts/schedule.js plan $ARGUMENTS --json`.
 - The JSON gives you `organization_id`, `channel_ids` (empty means every connected channel), `save_to_draft`, `posts` and `skipped`.
 - Each post has:
   - `key`
-  - `due_at`: local time with its offset. Pass it to Buffer exactly as given.
+  - `due_at_by_service`: local time with its offset for each channel service (`twitter`, `bluesky`, `linkedin`, `instagram`, and `other` for anything else). Each platform posts at its own best time (`POST_TIMES` in `scripts/lib/config.js`). Pass the time to Buffer exactly as given.
+  - `passed_services`: services whose time for this post has already passed today. Don't create the post on those channels.
+  - `due_at`: the same as `due_at_by_service.other`.
   - `text`
   - `image`: a URL, or `null`
   - `note`: for example, an announce post moved because the event was confirmed late
@@ -34,17 +36,19 @@ If the posts have an `image`, first check that the link loads: `curl -sSIL <url>
 
 For each post, and for each chosen channel that isn't already in the post's `created` list:
 
-1. Call `create_post` with:
+1. Look up the channel's time: `due_at_by_service[service]`, or `due_at_by_service.other` if the service isn't listed. If the service (or `other`) is in `passed_services`, skip this channel and say so in the report.
+2. Call `create_post` with:
    - `channelId`
    - `text`
    - `schedulingType: "automatic"`
    - `mode: "customScheduled"`
-   - `dueAt` set to the post's `due_at`
+   - `dueAt` set to that channel's time
    - `saveToDraft` set to `save_to_draft`
    - If `image` is set, `assets: [{ image: { url, metadata: { altText } } }]`. For `altText`, use `"<generated.title> — Lansing Codes speaker card"`.
-2. Skip Instagram and TikTok channels when there's no image, because they require one. Say so in the report.
-3. **Record the post immediately** with `node scripts/schedule.js record $ARGUMENTS <key> <channelId> <service> <buffer post id> <due_at>`. Do this after every successful `create_post`, so a failure partway through never leads to duplicates on the next run.
-4. If `create_post` fails (a plan limit, for example), stop. Report what was created and what wasn't.
+   - For Instagram, `metadata: { instagram: { type: "post", shouldShareToFeed: true } }`.
+3. Skip Instagram and TikTok channels when there's no image, because they require one. Say so in the report.
+4. **Record the post immediately** with `node scripts/schedule.js record $ARGUMENTS <key> <channelId> <service> <buffer post id> <that channel's time>`. Do this after every successful `create_post`, so a failure partway through never leads to duplicates on the next run.
+5. If `create_post` fails (a plan limit, for example), stop. Report what was created and what wasn't.
 
 After the first post, call `get_post` on it and confirm that its `dueAt` matches. If a draft lost its date, tell the user.
 

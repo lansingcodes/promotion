@@ -34,15 +34,30 @@ export const CANVA_FIELDS = {
 export const CANVA_IMAGE_FIELDS = ['speaker_photo']
 
 // Posting cadence (CLAUDE.md "Posting cadence"): caption key → days before the event.
-// `time` overrides POST_TIME for one post. Day-of goes out in the morning so
-// people see it before they plan their evening.
 export const POST_SCHEDULE = [
   { key: 'announce', daysBefore: 21 },
   { key: 'week_before', daysBefore: 7 },
   { key: 'day_before', daysBefore: 1 },
-  { key: 'day_of', daysBefore: 0, time: '09:00' },
+  { key: 'day_of', daysBefore: 0 },
 ]
-export const POST_TIME = '12:00' // default local time in TIMEZONE
+
+// Post times (local, in TIMEZONE) by Buffer channel service, from Buffer's 2026
+// best-time-to-post studies. `default` covers every caption key not listed.
+// Day-of posts can't wait for a platform's evening peak when the event starts
+// at 6 PM, so they go out in the morning (X, Bluesky) or at noon (LinkedIn,
+// Instagram, where mornings are weakest).
+export const POST_TIMES = {
+  twitter: { default: '10:00', day_of: '09:00' }, // weekday mornings, 9–11 AM
+  bluesky: { default: '20:00', day_of: '09:00' }, // weekday evenings, 6–9 PM; 10 AM–1 PM is the dead zone
+  linkedin: { default: '16:00', day_of: '12:00' }, // weekday late afternoon, 3–5 PM
+  instagram: { default: '19:00', day_of: '12:00' }, // evenings; mornings underperform
+  other: { default: '12:00', day_of: '09:00' }, // any other service
+}
+
+export function postTime(key, service) {
+  const times = POST_TIMES[service] ?? POST_TIMES.other
+  return times[key] ?? times.default
+}
 
 // Buffer, via the Buffer connector in Claude Code (/schedule-posts).
 export const BUFFER = {
