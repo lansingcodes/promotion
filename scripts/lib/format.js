@@ -8,7 +8,14 @@ const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', '
 export function parseDate(ymd) {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(String(ymd))
   if (!m) throw new Error(`bad date "${ymd}" (expected YYYY-MM-DD)`)
-  return new Date(Date.UTC(+m[1], +m[2] - 1, +m[3], 12))
+  const year = +m[1]
+  const month = +m[2]
+  const day = +m[3]
+  const date = new Date(Date.UTC(year, month - 1, day, 12))
+  if (date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) {
+    throw new Error(`bad date "${ymd}" (invalid calendar date)`)
+  }
+  return date
 }
 
 // 2026-10-20 → "Tue, Oct 20"
@@ -19,10 +26,17 @@ export function dateShort(ymd) {
 
 // "18:00" → "6:00 PM"
 export function time12(hhmm) {
+  const { hour, minute } = parseTime(hhmm)
+  return `${hour % 12 || 12}:${pad(minute)} ${hour < 12 ? 'AM' : 'PM'}`
+}
+
+function parseTime(hhmm) {
   const m = /^(\d{1,2}):(\d{2})$/.exec(String(hhmm))
   if (!m) throw new Error(`bad time "${hhmm}" (expected HH:MM)`)
-  const h = +m[1]
-  return `${h % 12 || 12}:${m[2]} ${h < 12 ? 'AM' : 'PM'}`
+  const hour = +m[1]
+  const minute = +m[2]
+  if (hour > 23 || minute > 59) throw new Error(`bad time "${hhmm}" (invalid clock time)`)
+  return { hour, minute }
 }
 
 const pad = (n) => String(n).padStart(2, '0')
@@ -52,9 +66,9 @@ export function todayIn(timeZone, now = new Date()) {
 
 // "2026-09-29" + "12:00" in America/Detroit → Date (the matching UTC instant).
 export function zonedToUtc(ymd, hhmm, timeZone) {
-  const [y, m, d] = ymd.split('-').map(Number)
-  const [h, mi] = hhmm.split(':').map(Number)
-  const target = Date.UTC(y, m - 1, d, h, mi)
+  const date = parseDate(ymd)
+  const { hour, minute } = parseTime(hhmm)
+  const target = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), hour, minute)
   let ms = target
   // Two passes settle the offset, including across DST changes.
   for (let i = 0; i < 2; i++) {
