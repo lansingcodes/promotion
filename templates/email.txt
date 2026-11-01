@@ -3,3 +3,5 @@ LANSING CODES · {{MONTH}}
 Here's what's happening with Lansing Codes this month.
 
 {{EVENTS}}
+
+Lansing Codes is a nonprofit community for developers, coding enthusiasts, and anyone curious about tech in Greater Lansing. We host a free meetup every month, keep a calendar of every local tech event at lansing.codes, and hang out on Slack at slack.lansing.codes. All events follow our Code of Conduct: https://www.lansing.codes/code-of-conduct

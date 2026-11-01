@@ -13,9 +13,9 @@ function withEvents(files, run) {
   } finally { rmSync(dir, { recursive: true, force: true }) }
 }
 
-const event = ({ date = '2027-03-10', title = 'A talk', status = 'approved', link = 'https://example.org/register' } = {}) => `
+const event = ({ date = '2027-03-10', title = 'A talk', startTime = '18:00', status = 'approved', link = 'https://example.org/register' } = {}) => `
 date: ${date}
-start_time: "18:00"
+start_time: "${startTime}"
 end_time: "20:00"
 venue: { name: "Main Hall" }
 registration_link: "${link}"
@@ -50,7 +50,20 @@ test('escapes HTML and rejects unsafe registration URLs', () => withEvents({
 }))
 
 test('renders a clear empty month and rejects impossible dates', () => withEvents({}, (dir) => {
-  assert.match(renderDigest('2027-03', { eventsDir: dir }).text, /No Lansing Codes events/)
+  const empty = renderDigest('2027-03', { eventsDir: dir })
+  assert.match(empty.text, /No Lansing Codes events/)
+  assert.match(empty.text, /All events follow our Code of Conduct:/)
+  assert.match(empty.html, /All events follow our Code of Conduct:/)
   writeFileSync(join(dir, 'bad.yml'), event({ date: '2027-03-32' }))
   assert.throws(() => renderDigest('2027-03', { eventsDir: dir }), /invalid event date/)
+}))
+
+test('same-date events follow filenames and dollar signs remain literal', () => withEvents({
+  'a.yml': event({ title: 'Later $$', startTime: '20:00' }),
+  'b.yml': event({ title: 'Earlier', startTime: '18:00' }),
+}, (dir) => {
+  const result = renderDigest('2027-03', { eventsDir: dir })
+  assert.ok(result.text.indexOf('Later $$') < result.text.indexOf('Earlier'))
+  assert.match(result.html, /Later \$\$/)
+  assert.match(result.text, /Later \$\$/)
 }))

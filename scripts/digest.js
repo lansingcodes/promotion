@@ -69,14 +69,12 @@ export function renderDigest(month, { eventsDir = 'events', templatesDir = 'temp
   const events = listEventFiles(eventsDir).map((path) => ({ path, event: readEvent(path) }))
     .filter(({ event }) => isExportable(event) && String(event.date).startsWith(month))
   for (const { path, event } of events) validateEvent(event, path, month)
-  events.sort((a, b) => a.event.date.localeCompare(b.event.date) ||
-    a.event.start_time.localeCompare(b.event.start_time) ||
-    a.event.generated.title.localeCompare(b.event.generated.title))
+  events.sort((a, b) => a.event.date.localeCompare(b.event.date) || a.path.localeCompare(b.path))
   const htmlEvents = events.length ? events.map(({ event }) => renderHtmlEvent(event)).join('\n') :
     '<p>No Lansing Codes events are scheduled for this month.</p>'
   const textEvents = events.length ? events.map(({ event }) => renderTextEvent(event)).join('\n\n') :
     'No Lansing Codes events are scheduled for this month.'
-  const apply = (template, body) => template.replaceAll('{{MONTH}}', monthLabel).replaceAll('{{EVENTS}}', body)
+  const apply = (template, body) => template.replaceAll('{{MONTH}}', monthLabel).replaceAll('{{EVENTS}}', () => body)
   return {
     count: events.length,
     html: apply(readFileSync(join(templatesDir, 'email.html'), 'utf8'), htmlEvents),
