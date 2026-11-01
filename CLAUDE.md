@@ -26,7 +26,7 @@ generated: block filled in              ← organizer reviews the git diff, edit
         └──▶ npm run digest -- 2026-10 → out/digest-2026-10.html/.txt → Mailchimp, sent on the 1st
 ```
 
-> **Build status (2026-09-22):** Tasks 1–4 are done: the scaffold, this file, the schema, the fixtures, `/draft-event`, `/make-cards` and `/schedule-posts`. The `npm run digest` script (task 5) is **not built yet**. The steps below describe the target workflow.
+> **Build status (2026-11-01):** Tasks 1–4 are done: the scaffold, this file, the schema, the fixtures, `/draft-event`, `/make-cards` and `/schedule-posts`. The `npm run digest` script now generates local HTML and plain text from approved or published event files. An organizer still needs to verify the HTML in the actual Mailchimp editor, send a test email, and approve any campaign before sending.
 >
 > **How `/draft-event` works:** Claude writes the copy, and [`scripts/draft_event.js`](scripts/draft_event.js) is the only thing that writes to the file. The script rewrites only the text from `generated:` down, so everything above it stays byte-for-byte as you wrote it. It rejects copy that breaks the length or hashtag limits, warns on avoided words ([`scripts/lib/voice.js`](scripts/lib/voice.js); keep that list in sync with the one below), and resets `status` to `draft`.
 

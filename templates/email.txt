@@ -1,0 +1,5 @@
+LANSING CODES · {{MONTH}}
+
+Here's what's happening with Lansing Codes this month.
+
+{{EVENTS}}

@@ -10,7 +10,8 @@
   "scripts": {
     "test": "node --test",
     "canva:csv": "node scripts/export_canva.js csv",
-    "schedule": "node scripts/schedule.js"
+    "schedule": "node scripts/schedule.js",
+    "digest": "node scripts/digest.js"
   },
   "license": "Hippocratic-2.1",
   "dependencies": {
