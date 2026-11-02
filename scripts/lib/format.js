@@ -25,6 +25,29 @@ export function time12(hhmm) {
   return `${h % 12 || 12}:${m[2]} ${h < 12 ? 'AM' : 'PM'}`
 }
 
+const DAYS_LONG = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
+const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+
+// 2026-10-20 → "Tuesday, October 20"
+export function dateLong(ymd) {
+  const d = parseDate(ymd)
+  return `${DAYS_LONG[d.getUTCDay()]}, ${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}`
+}
+
+// "2026-11" → "November"
+export function monthName(ym) {
+  const m = /^(\d{4})-(\d{2})$/.exec(String(ym))
+  if (!m || +m[2] < 1 || +m[2] > 12) throw new Error(`bad month "${ym}" (expected YYYY-MM)`)
+  return MONTHS_LONG[+m[2] - 1]
+}
+
+// "18:00", "20:00" → "6:00–8:00 PM"; "11:00", "13:00" → "11:00 AM–1:00 PM"
+export function timeRange(start, end) {
+  const [s, sp] = time12(start).split(' ')
+  const e = time12(end)
+  return e.endsWith(sp) ? `${s}–${e}` : `${s} ${sp}–${e}`
+}
+
 const pad = (n) => String(n).padStart(2, '0')
 
 // 2026-10-20 + (-21) → "2026-09-29"

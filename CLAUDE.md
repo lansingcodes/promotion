@@ -26,7 +26,7 @@ generated: block filled in              ← organizer reviews the git diff, edit
         └──▶ npm run digest -- 2026-10 → out/digest-2026-10.html/.txt → Mailchimp, sent on the 1st
 ```
 
-> **Build status (2026-09-22):** Tasks 1–4 are done: the scaffold, this file, the schema, the fixtures, `/draft-event`, `/make-cards` and `/schedule-posts`. The `npm run digest` script (task 5) is **not built yet**. The steps below describe the target workflow.
+> **Build status (2026-11-01):** Tasks 1–5 are done: the scaffold, this file, the schema, the fixtures, `/draft-event`, `/make-cards`, `/schedule-posts` and `npm run digest`.
 >
 > **How `/draft-event` works:** Claude writes the copy, and [`scripts/draft_event.js`](scripts/draft_event.js) is the only thing that writes to the file. The script rewrites only the text from `generated:` down, so everything above it stays byte-for-byte as you wrote it. It rejects copy that breaks the length or hashtag limits, warns on avoided words ([`scripts/lib/voice.js`](scripts/lib/voice.js); keep that list in sync with the one below), and resets `status` to `draft`.
 
@@ -43,7 +43,10 @@ generated: block filled in              ← organizer reviews the git diff, edit
    - Each Buffer post ID is written back to the event file under `buffer_posts:`, so a rerun only fills in what's missing. For example, after you connect a new channel, rerun it to add that channel's posts.
    - Each post gets the square card attached, served from `BUFFER.imageBaseUrl` (the `cards/` folder on GitHub). Buffer fetches the image when the post goes out, so **push the cards before running this**. Then review the drafts in Buffer and schedule them.
 6. **Meetup.** Paste `generated.description_long` into the Meetup event and use `cards/<stem>-banner.png` as the event image. Once it's live, set `status: published`.
-7. **Email.** On the 1st of the month, run `npm run digest -- YYYY-MM`, paste the HTML into Mailchimp, send a test to yourself, then send it.
+7. **Email.** On the 1st of the month, run `npm run digest -- YYYY-MM`. It takes every approved or published event in that month and writes `out/digest-YYYY-MM.html` and `.txt`, and prints a suggested subject line and preview text. Each event shows its square card if `cards/<stem>-square.png` exists, served from GitHub, so push the cards first.
+   - In Mailchimp, create a regular campaign and paste the HTML into a **Code** content block. It's a fragment with inline styles, so it doesn't replace the template, and the template's own footer supplies the unsubscribe link and mailing address.
+   - Paste the `.txt` into the plain-text version. It carries its own unsubscribe merge tags.
+   - Send a test to yourself, then send it.
 
 ---
 

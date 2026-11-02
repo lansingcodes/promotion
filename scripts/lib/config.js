@@ -73,3 +73,12 @@ export const BUFFER = {
   imageBaseUrl: 'https://raw.githubusercontent.com/lansingcodes/promotion/main/cards/',
   image: 'square', // which card from /make-cards to attach
 }
+
+// Monthly email digest (npm run digest), pasted into Mailchimp.
+export const DIGEST = {
+  // Each event shows this card if cards/<stem>-<image>.png exists, served from
+  // the same public URL Buffer uses, so push the cards before sending.
+  // Empty imageBaseUrl = no images.
+  imageBaseUrl: BUFFER.imageBaseUrl,
+  image: 'square',
+}
