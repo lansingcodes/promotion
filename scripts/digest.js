@@ -1,9 +1,11 @@
 #!/usr/bin/env node
 // Monthly email digest, pasted into Mailchimp on the 1st.
 //
-//   node scripts/digest.js YYYY-MM [--events <dir>] [--cards <dir>]
+//   node scripts/digest.js YYYY-MM [--events <dir>] [--cards <dir>] [--offline]
 //     out/digest-YYYY-MM.html and .txt from templates/email.{html,txt}:
-//     every approved or published event in that month, sorted by date.
+//     every approved or published event in that month, sorted by date, then
+//     "Around town": that month's events from the lansing.codes calendar.
+//     --offline skips the calendar, leaving that section out.
 //
 // Templates use {{key}} for values and {{#key}}…{{/key}} for sections: a list
 // repeats the section per item, any other truthy value shows it once, and an
@@ -11,9 +13,10 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { pathToFileURL } from 'node:url'
-import { DIGEST } from './lib/config.js'
+import { fetchAroundTown } from './lib/around_town.js'
+import { DIGEST, TIMEZONE } from './lib/config.js'
 import { eventStem, isExportable, listEventFiles, readEvent } from './lib/events.js'
-import { dateLong, monthName, timeRange } from './lib/format.js'
+import { dateLong, dateShort, localDateTime, monthName, time12, timeRange } from './lib/format.js'
 
 const escapeHtml = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -64,8 +67,15 @@ function eventEntry(path, event, { cardsDir, imageBaseUrl }) {
   }
 }
 
+// A calendar event from fetchAroundTown → one "Around town" line.
+function aroundTownEntry(e) {
+  const { date, time } = localDateTime(e.startTime, TIMEZONE)
+  return { date: dateShort(date), time: time12(time), title: e.name, group: e.group, venue: e.venue, link: e.url }
+}
+
 // Everything the templates need for one month, plus a suggested subject line.
-export function digestContext(month, files, { cardsDir = 'cards', imageBaseUrl = DIGEST.imageBaseUrl } = {}) {
+// `aroundTown` is fetchAroundTown's output; events featured above are left out of it.
+export function digestContext(month, files, { cardsDir = 'cards', imageBaseUrl = DIGEST.imageBaseUrl, aroundTown = [] } = {}) {
   const name = monthName(month)
   const events = files
     .map((path) => ({ path, event: readEvent(path) }))
@@ -74,10 +84,15 @@ export function digestContext(month, files, { cardsDir = 'cards', imageBaseUrl =
     .map(({ path, event }) => eventEntry(path, event, { cardsDir, imageBaseUrl }))
   if (!events.length) throw new Error(`no approved or published events in ${month}`)
 
+  const featured = new Set(events.map((e) => e.link))
+  const around = aroundTown.filter((e) => !featured.has(e.url)).map(aroundTownEntry)
   return {
     month: name,
     year: month.slice(0, 4),
     events,
+    around_town: around,
+    // A list section repeats per item, so headings check this flag instead.
+    has_around_town: around.length > 0,
     // The inbox shows the subject first and this preview text after it, so it adds the hook.
     preheader: events.map((e) => `${e.date}: ${e.hook}`).join(' · '),
     subject: `Lansing Codes in ${name} · ${events.map((e) => e.title).join(' · ')}`,
@@ -99,30 +114,40 @@ function flag(args, name) {
   return i === -1 ? undefined : args[i + 1]
 }
 
-function main(args) {
+async function main(args) {
   const [month] = args
   if (!month || month.startsWith('--')) {
-    console.error('usage: digest.js YYYY-MM [--events <dir>] [--cards <dir>]')
+    console.error('usage: digest.js YYYY-MM [--events <dir>] [--cards <dir>] [--offline]')
     process.exitCode = 2
     return
   }
+  monthName(month)
+  let aroundTown = []
+  if (!args.includes('--offline')) {
+    try {
+      aroundTown = await fetchAroundTown(month)
+    } catch (err) {
+      throw new Error(`couldn't read the lansing.codes calendar (${err.message}); rerun, or pass --offline to leave out "Around town"`)
+    }
+  }
   const { ctx, html, text } = digest(month, listEventFiles(flag(args, '--events') ?? 'events'), {
     cardsDir: flag(args, '--cards') ?? 'cards',
+    aroundTown,
   })
   mkdirSync('out', { recursive: true })
   writeFileSync(`out/digest-${month}.html`, html)
   writeFileSync(`out/digest-${month}.txt`, text)
   console.log(`Wrote out/digest-${month}.html and .txt (${ctx.events.length} event${ctx.events.length === 1 ? '' : 's'}).`)
   for (const e of ctx.events) console.log(`  ${e.date}: ${e.title}${e.image_url ? '' : ' (no card image)'}`)
+  console.log(args.includes('--offline') ? 'Around town: skipped (--offline)' : `Around town: ${ctx.around_town.length} calendar event${ctx.around_town.length === 1 ? '' : 's'}`)
+  for (const e of ctx.around_town) console.log(`  ${e.date}: ${e.title} (${e.group})`)
   console.log(`Subject:      ${ctx.subject}`)
   console.log(`Preview text: ${ctx.preheader}`)
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try {
-    main(process.argv.slice(2))
-  } catch (err) {
+  main(process.argv.slice(2)).catch((err) => {
     console.error(`error: ${err.message}`)
     process.exitCode = 1
-  }
+  })
 }

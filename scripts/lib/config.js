@@ -82,3 +82,18 @@ export const DIGEST = {
   imageBaseUrl: BUFFER.imageBaseUrl,
   image: 'square',
 }
+
+// "Around town": every local group's events from the lansing.codes calendar.
+// The site keeps them in Firestore (project lansing-codes), which allows public
+// reads over REST, and lists the groups in its repo's data/groups.json.
+export const AROUND_TOWN = {
+  firestoreQueryUrl:
+    'https://firestore.googleapis.com/v1/projects/lansing-codes/databases/(default)/documents:runQuery',
+  groupsUrl: 'https://raw.githubusercontent.com/lansingcodes/website/main/data/groups.json',
+  // Group key → name in the email, where groups.json's short name ("DevOps") isn't enough.
+  groupNames: {
+    catech: 'Capital Area Tech Hub',
+    devops: 'Lansing DevOps Meetup',
+    dotnet: 'GLUGnet (.NET)',
+  },
+}

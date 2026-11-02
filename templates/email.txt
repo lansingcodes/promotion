@@ -18,6 +18,19 @@ Here's what Lansing Codes has on the calendar this month. Our events are free, a
 
 Details and RSVP: {{link}}
 {{/events}}
+{{#has_around_town}}
+
+----------------------------------------
+
+Around town in {{month}}
+From the tech groups on the lansing.codes calendar.
+{{/has_around_town}}
+{{#around_town}}
+
+{{date}} · {{title}}
+  {{group}} · {{time}}{{#venue}} · {{venue}}{{/venue}}
+  {{link}}
+{{/around_town}}
 
 ----------------------------------------
 

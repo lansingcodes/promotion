@@ -4,6 +4,7 @@ import { copyFileSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } fro
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { digest, digestContext, render } from '../scripts/digest.js'
+import { fetchAroundTown, monthRange } from '../scripts/lib/around_town.js'
 import { listEventFiles } from '../scripts/lib/events.js'
 import { dateLong, monthName, timeRange } from '../scripts/lib/format.js'
 
@@ -111,4 +112,77 @@ test('renders the real templates deterministically', () => {
   assert.match(a.text, /\nTuesday, November 17, 6:00–8:00 PM\nTechnology Innovation Center\n/)
   assert.match(a.text, /\nDetails and RSVP: https:\/\/www\.meetup\.com\/lansing-codes-meetup\/\n/)
   assert.doesNotMatch(a.text, /\{\{|\n\n\n/)
+})
+
+// Shaped like the lansing.codes Firestore REST response and groups.json.
+const firestoreRow = (group, name, startTime, url, venue = '') => ({
+  document: {
+    fields: {
+      group: { stringValue: group },
+      name: { stringValue: name },
+      startTime: { integerValue: String(startTime) },
+      url: { stringValue: url },
+      venue: { stringValue: venue },
+    },
+  },
+})
+const NOV_19_6PM = Date.parse('2026-11-19T23:00:00Z') // 6:00 PM EST
+const NOV_6_3PM = Date.parse('2026-11-06T20:00:00Z') // 3:00 PM EST
+
+function fakeFetch(rows) {
+  const calls = []
+  const fetchFn = async (url, init) => {
+    calls.push({ url, body: init?.body && JSON.parse(init.body) })
+    const body = url.endsWith('groups.json')
+      ? { ai: { name: 'AI' }, dotnet: { name: '.NET' } }
+      : [...rows, { readTime: 'x' }]
+    return { ok: true, json: async () => body }
+  }
+  return { fetchFn, calls }
+}
+
+test('monthRange covers the month in Lansing time, across DST and year end', () => {
+  assert.deepEqual(monthRange('2026-11'), [Date.parse('2026-11-01T04:00:00Z'), Date.parse('2026-12-01T05:00:00Z')])
+  assert.deepEqual(monthRange('2026-12'), [Date.parse('2026-12-01T05:00:00Z'), Date.parse('2027-01-01T05:00:00Z')])
+})
+
+test('fetchAroundTown queries the month, sorts, and names groups', async () => {
+  const { fetchFn, calls } = fakeFetch([
+    firestoreRow('dotnet', 'The Anatomy of an AI Agent', NOV_19_6PM, 'https://example.org/b', ' Online '),
+    firestoreRow('ai', 'AI Office Hours', NOV_6_3PM, 'https://example.org/a'),
+  ])
+  const events = await fetchAroundTown('2026-11', { fetchFn })
+  assert.deepEqual(events, [
+    { startTime: NOV_6_3PM, name: 'AI Office Hours', group: 'AI', venue: '', url: 'https://example.org/a' },
+    { startTime: NOV_19_6PM, name: 'The Anatomy of an AI Agent', group: 'GLUGnet (.NET)', venue: 'Online', url: 'https://example.org/b' },
+  ])
+  const filters = calls.find((c) => c.body).body.structuredQuery.where.compositeFilter.filters
+  assert.deepEqual(filters.map((f) => f.fieldFilter.value.integerValue), monthRange('2026-11').map(String))
+})
+
+test('fetchAroundTown fails loudly on an HTTP error', async () => {
+  const fetchFn = async () => ({ ok: false, status: 403 })
+  await assert.rejects(fetchAroundTown('2026-11', { fetchFn }), /HTTP 403/)
+})
+
+test('Around town lists calendar events, skipping ones already featured', async () => {
+  const { fetchFn } = fakeFetch([
+    firestoreRow('ai', 'AI Office Hours', NOV_6_3PM, 'https://example.org/a'),
+    firestoreRow('lansing_codes', 'Postgres tips', NOV_19_6PM, 'https://www.meetup.com/lansing-codes-meetup/'),
+    firestoreRow('dotnet', 'Agents & <tools>', NOV_19_6PM, 'https://example.org/b', 'Online'),
+  ])
+  const aroundTown = await fetchAroundTown('2026-11', { fetchFn })
+  const files = listEventFiles(tempEvents('approved'))
+  const { ctx, html, text } = digest('2026-11', files, { ...opts, aroundTown })
+
+  assert.deepEqual(ctx.around_town.map((e) => e.title), ['AI Office Hours', 'Agents & <tools>'])
+  assert.deepEqual(ctx.around_town[0], {
+    date: 'Fri, Nov 6', time: '3:00 PM', title: 'AI Office Hours', group: 'AI', venue: '', link: 'https://example.org/a',
+  })
+  assert.equal(html.match(/Around town in November/g).length, 1)
+  assert.match(html, /<a href="https:\/\/example\.org\/b"[^>]*>Agents &amp; &lt;tools&gt;<\/a><br><span[^>]*>GLUGnet \(\.NET\) · 6:00 PM · Online<\/span>/)
+  assert.match(text, /\nAround town in November\n.*\n\nFri, Nov 6 · AI Office Hours\n  AI · 3:00 PM\n  https:\/\/example\.org\/a\n\nThu, Nov 19 · Agents & <tools>\n  GLUGnet \(\.NET\) · 6:00 PM · Online\n/)
+
+  const none = digest('2026-11', files, opts)
+  assert.doesNotMatch(none.html + none.text, /Around town/)
 })

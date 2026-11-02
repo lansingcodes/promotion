@@ -67,6 +67,12 @@ function wallParts(ms, timeZone) {
   return { y: get('year'), m: get('month'), d: get('day'), h: get('hour'), mi: get('minute'), s: get('second') }
 }
 
+// An instant (ms) as local "YYYY-MM-DD" and "HH:MM" in a timezone.
+export function localDateTime(ms, timeZone) {
+  const p = wallParts(ms, timeZone)
+  return { date: `${p.y}-${pad(p.m)}-${pad(p.d)}`, time: `${pad(p.h)}:${pad(p.mi)}` }
+}
+
 // Today's calendar date in a timezone, as "YYYY-MM-DD".
 export function todayIn(timeZone, now = new Date()) {
   const p = wallParts(now.getTime(), timeZone)
