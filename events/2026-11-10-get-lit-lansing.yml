@@ -69,3 +69,120 @@ generated:
     - "Parking isn't mentioned on the site"
     - "Announce date (Oct 20) has passed; the announce post would go out tomorrow"
 status: approved
+buffer_posts:
+  announce:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ae7e5aa902c3fb1deca26c6
+      due_at: 2026-11-02T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6ae7e5c82da2578c18921796
+      due_at: 2026-11-02T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6ae7e5c901fa08ffbe7977d8
+      due_at: 2026-11-02T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6ae7e5ca2da2578c189217cd
+      due_at: 2026-11-02T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6ae7e5cb902c3fb1deca2f83
+      due_at: 2026-11-02T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6ae7e5cc2da2578c1892182f
+      due_at: 2026-11-02T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6ae7e5ccd016796999ff8b19
+      due_at: 2026-11-02T19:00:00-05:00
+  week_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ae7e5edd016796999ff92be
+      due_at: 2026-11-03T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6ae7e5ee48ce42a6b4388433
+      due_at: 2026-11-03T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6ae7e5ef902c3fb1deca3533
+      due_at: 2026-11-03T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6ae7e5f001fa08ffbe798537
+      due_at: 2026-11-03T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6ae7e5f02da2578c18921eb6
+      due_at: 2026-11-03T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6ae7e5f1d016796999ff936e
+      due_at: 2026-11-03T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6ae7e5f248ce42a6b4388499
+      due_at: 2026-11-03T19:00:00-05:00
+  day_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ae7e614779ee9f13cc706b1
+      due_at: 2026-11-09T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6ae7e615779ee9f13cc706de
+      due_at: 2026-11-09T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6ae7e61648ce42a6b4388b43
+      due_at: 2026-11-09T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6ae7e61701fa08ffbe798baf
+      due_at: 2026-11-09T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6ae7e618902c3fb1deca3e3f
+      due_at: 2026-11-09T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6ae7e61848ce42a6b4388bac
+      due_at: 2026-11-09T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6ae7e619d016796999ff9ecc
+      due_at: 2026-11-09T19:00:00-05:00
+  day_of:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6ae7e63a779ee9f13cc70afd
+      due_at: 2026-11-10T09:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6ae7e63b902c3fb1deca449e
+      due_at: 2026-11-10T09:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6ae7e63c2da2578c18922896
+      due_at: 2026-11-10T09:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6ae7e63c01fa08ffbe799009
+      due_at: 2026-11-10T09:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6ae7e63d902c3fb1deca44f5
+      due_at: 2026-11-10T12:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6ae7e63e48ce42a6b4388f86
+      due_at: 2026-11-10T12:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6ae7e63fd016796999ffa41b
+      due_at: 2026-11-10T12:00:00-05:00
