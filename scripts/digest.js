@@ -45,12 +45,26 @@ export function render(template, ctx, { html = false } = {}) {
   return renderPart(tpl, ctx, html ? escapeHtml : String)
 }
 
+function webLink(value, source) {
+  let url
+  try {
+    if (typeof value !== 'string' || value !== value.trim() || /[\x00-\x20\x7f]/.test(value)) throw new Error()
+    url = new URL(value)
+  } catch {
+    throw new Error(`${source}: expected an HTTP(S) URL without credentials`)
+  }
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) {
+    throw new Error(`${source}: expected an HTTP(S) URL without credentials`)
+  }
+  return url.href
+}
+
 function eventEntry(path, event, { cardsDir, imageBaseUrl }) {
   const g = event.generated ?? {}
   for (const key of ['title', 'hook', 'email_blurb']) {
     if (!g[key]?.trim()) throw new Error(`${path}: generated.${key} is empty; run /draft-event first`)
   }
-  if (!event.registration_link) throw new Error(`${path}: registration_link is empty`)
+  const link = webLink(event.registration_link, `${path}: registration_link`)
 
   const card = `${eventStem(path)}-${DIGEST.image}.png`
   const hasCard = imageBaseUrl && cardsDir && existsSync(join(cardsDir, card))
@@ -62,7 +76,7 @@ function eventEntry(path, event, { cardsDir, imageBaseUrl }) {
     time: timeRange(event.start_time, event.end_time),
     venue_name: event.venue?.name ?? '',
     venue_address: event.venue?.address ?? '',
-    link: event.registration_link,
+    link,
     image_url: hasCard ? new URL(card, imageBaseUrl).href : '',
   }
 }
@@ -70,7 +84,8 @@ function eventEntry(path, event, { cardsDir, imageBaseUrl }) {
 // A calendar event from fetchAroundTown → one "Around town" line.
 function aroundTownEntry(e) {
   const { date, time } = localDateTime(e.startTime, TIMEZONE)
-  return { date: dateShort(date), time: time12(time), title: e.name, group: e.group, venue: e.venue, link: e.url }
+  return { date: dateShort(date), time: time12(time), title: e.name, group: e.group, venue: e.venue,
+    link: webLink(e.url, `Around town event "${e.name}": url`) }
 }
 
 // Everything the templates need for one month, plus a suggested subject line.
