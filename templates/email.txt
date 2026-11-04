@@ -1,0 +1,46 @@
+Lansing Codes · {{month}} {{year}}
+
+Coming up in {{month}}
+
+Here's what Lansing Codes has on the calendar this month. Our events are free, and beginners are always welcome.
+{{#events}}
+
+----------------------------------------
+
+{{title}}
+{{hook}}
+
+{{date}}, {{time}}
+{{venue_name}}
+{{venue_address}}
+
+{{blurb}}
+
+Details and RSVP: {{link}}
+{{/events}}
+{{#has_around_town}}
+
+----------------------------------------
+
+Around town in {{month}}
+From the tech groups on the lansing.codes calendar.
+{{/has_around_town}}
+{{#around_town}}
+
+{{date}} · {{title}}
+  {{group}} · {{time}}{{#venue}} · {{venue}}{{/venue}}
+  {{link}}
+{{/around_town}}
+
+----------------------------------------
+
+Every local tech group's events are on the calendar at https://www.lansing.codes
+Come say hi on Slack: https://slack.lansing.codes
+
+Lansing Codes is a nonprofit community for developers, coding enthusiasts, and anyone curious about tech in Greater Lansing. We host a free meetup every month, keep a calendar of every local tech event at lansing.codes, and hang out on Slack at slack.lansing.codes. All events follow our Code of Conduct: https://www.lansing.codes/code-of-conduct
+
+You're getting this because you signed up at lansing.codes.
+Update your preferences: *|UPDATE_PROFILE|*
+Unsubscribe: *|UNSUB|*
+
+*|LIST:ADDRESSLINE|*
