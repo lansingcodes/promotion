@@ -4,7 +4,7 @@ import { copyFileSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { csv, fields, setPhoto } from '../scripts/export_canva.js'
-import { dateShort, time12 } from '../scripts/lib/format.js'
+import { dateShort, time12, zonedIso } from '../scripts/lib/format.js'
 
 const FIXTURE = 'fixtures/events/2026-11-17-sam-rivera.yml'
 
@@ -23,6 +23,15 @@ test('formats dates and times for display', () => {
   assert.equal(time12('18:00'), '6:00 PM')
   assert.equal(time12('12:30'), '12:30 PM')
   assert.equal(time12('09:05'), '9:05 AM')
+})
+
+test('rejects impossible event dates and clock times instead of rolling them over', () => {
+  assert.throws(() => dateShort('2026-02-30'), /invalid calendar date/)
+  assert.throws(() => dateShort('2026-13-01'), /invalid calendar date/)
+  assert.throws(() => time12('25:99'), /invalid clock time/)
+  assert.throws(() => time12('12:60'), /invalid clock time/)
+  assert.throws(() => zonedIso('2026-02-30', '12:00', 'America\/Detroit'), /invalid calendar date/)
+  assert.throws(() => zonedIso('2026-11-17', '25:00', 'America\/Detroit'), /invalid clock time/)
 })
 
 test('fields refuses drafts unless previewing', () => {
