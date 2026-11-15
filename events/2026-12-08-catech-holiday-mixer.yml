@@ -63,4 +63,121 @@ generated:
     - "No agenda section: CATECH didn't post one"
     - "Food and drinks not mentioned on CATECH's page"
     - "No speaker: /make-cards needs a different card design or CATECH's own image"
-status: draft
+status: approved
+buffer_posts:
+  announce:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6afa2aef06e1675856aa2a91
+      due_at: 2026-11-17T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6afa2b068e87c256a393a88b
+      due_at: 2026-11-17T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6afa2b08a869c35e5b9b4406
+      due_at: 2026-11-17T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6afa2b098e87c256a393a931
+      due_at: 2026-11-17T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6afa2b0a8e87c256a393a99c
+      due_at: 2026-11-17T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6afa2b0bdaa378ad6895c607
+      due_at: 2026-11-17T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6afa2b0ba869c35e5b9b4532
+      due_at: 2026-11-17T19:00:00-05:00
+  week_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6afa2b29daa378ad6895cabf
+      due_at: 2026-12-01T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6afa2b2a8e87c256a393ae74
+      due_at: 2026-12-01T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6afa2b2cdaa378ad6895cb59
+      due_at: 2026-12-01T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6afa2b2eff465c57dab4b4dc
+      due_at: 2026-12-01T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6afa2b30daa378ad6895cbf6
+      due_at: 2026-12-01T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6afa2b318e87c256a393afc8
+      due_at: 2026-12-01T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6afa2b32daa378ad6895cc4c
+      due_at: 2026-12-01T19:00:00-05:00
+  day_before:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6afa2b51daa378ad6895d0ae
+      due_at: 2026-12-07T10:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6afa2b52daa378ad6895d10c
+      due_at: 2026-12-07T10:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6afa2b5260a910801c4deccf
+      due_at: 2026-12-07T20:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6afa2b53a869c35e5b9b59cd
+      due_at: 2026-12-07T20:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6afa2b54ff465c57dab4bfd3
+      due_at: 2026-12-07T16:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6afa2b558e87c256a393b5cb
+      due_at: 2026-12-07T19:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6afa2b5560a910801c4dedfe
+      due_at: 2026-12-07T19:00:00-05:00
+  day_of:
+    - channel_id: 6ab3264cea19ca0bdebe8c27
+      service: twitter
+      post_id: 6afa2b808e87c256a393ebb4
+      due_at: 2026-12-08T09:00:00-05:00
+    - channel_id: 6ac447b06a5c39ccb628a25a
+      service: twitter
+      post_id: 6afa2b81ff465c57dab4fe74
+      due_at: 2026-12-08T09:00:00-05:00
+    - channel_id: 6ac4427f6a5c39ccb628823e
+      service: bluesky
+      post_id: 6afa2b8206e1675856aa80ab
+      due_at: 2026-12-08T09:00:00-05:00
+    - channel_id: 6ac443b26a5c39ccb6288a25
+      service: bluesky
+      post_id: 6afa2b84daa378ad6896144a
+      due_at: 2026-12-08T09:00:00-05:00
+    - channel_id: 6ac44e746a5c39ccb628f3a3
+      service: linkedin
+      post_id: 6afa2b858e87c256a393f405
+      due_at: 2026-12-08T12:00:00-05:00
+    - channel_id: 6ac446536a5c39ccb6289aaf
+      service: instagram
+      post_id: 6afa2b86daa378ad68961727
+      due_at: 2026-12-08T12:00:00-05:00
+    - channel_id: 6ac450486a5c39ccb62900ea
+      service: instagram
+      post_id: 6afa2b878e87c256a393f51d
+      due_at: 2026-12-08T12:00:00-05:00
