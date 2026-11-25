@@ -215,6 +215,10 @@ extra_buffer_posts:
         service: instagram
         post_id: 6b06e8c9d71f91495672d67f
         due_at: 2026-11-26T10:00:00-05:00
+      - channel_id: 6ac443b26a5c39ccb6288a25
+        service: bluesky
+        post_id: 6b06eb65d1898df0f7fbeddc
+        due_at: 2026-11-26T10:00:00-05:00
   next_tuesday:
     text: "Next Tuesday: CATECH's annual holiday mixer at Cask & Company. A chance to close out the year with Lansing's tech folks and kick off 2027 with some new connections. Tue, Dec 8, 4:30–7:00 PM. Free. RSVP: https://www.meetup.com/catech/events/316881308/ #LansingCodes #LansingTech"
     text_linkedin: "Next Tuesday: the annual holiday mixer from Capital Area Tech Hub (CATECH) at Cask & Company. A chance to close out the year with Lansing's tech folks and kick off 2027 with some new connections. Tue, Dec 8, 4:30–7:00 PM. Free. RSVP: https://www.meetup.com/catech/events/316881308/ #LansingCodes #LansingTech"
