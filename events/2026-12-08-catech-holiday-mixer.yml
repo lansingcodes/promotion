@@ -257,7 +257,7 @@ extra_buffer_posts:
     text_instagram: "CATECH's holiday mixer is this Tuesday. Thanks to sponsors LEAP and the Lansing Regional SmartZone (@purelansing), @techsmith, Dewpoint and @teksystems. Tue, Dec 8, 4:30–7:00 PM, Cask & Company. Free. RSVP: https://www.meetup.com/catech/events/316881308/ #LansingCodes"
     text_bluesky: "CATECH's holiday mixer is this Tuesday. Thanks to its sponsors: LEAP and the Lansing Regional SmartZone, @techsmith.com, Dewpoint and TEKsystems. Tue, Dec 8, 4:30–7:00 PM at Cask & Company. Free. RSVP: https://www.meetup.com/catech/events/316881308/ #LansingCodes #LansingTech"
     text_linkedin: "The holiday mixer from Capital Area Tech Hub (CATECH) is this Tuesday. Thanks to its sponsors: Lansing Economic Area Partnership | LEAP and the Lansing Regional SmartZone, TechSmith, Dewpoint and TEKsystems. Tue, Dec 8, 4:30–7:00 PM at Cask & Company. Free. RSVP: https://www.meetup.com/catech/events/316881308/ #LansingCodes #LansingTech"
-    video: https://cdn.jsdelivr.net/gh/lansingcodes/promotion@f0b3907/cards/2026-12-08-catech-holiday-mixer-sponsors.mp4
+    video: https://cdn.jsdelivr.net/gh/lansingcodes/promotion@a3f8d6f/cards/2026-12-08-catech-holiday-mixer-sponsors.mp4
     posts:
       - channel_id: 6ab3264cea19ca0bdebe8c27
         service: twitter
