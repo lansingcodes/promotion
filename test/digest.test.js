@@ -72,6 +72,21 @@ test('builds each event entry from the event file', () => {
   })
 })
 
+test('digest accepts web registration links and rejects unsafe URLs with the source path', () => {
+  const dir = tempEvents('approved')
+  const path = join(dir, '2026-11-17-sam-rivera.yml')
+  const original = readFileSync(path, 'utf8')
+  for (const link of ['https://example.org/register', 'http://example.org/register']) {
+    writeFileSync(path, original.replace('https://www.meetup.com/lansing-codes-meetup/', link))
+    assert.equal(digestContext('2026-11', listEventFiles(dir), opts).events[0].link, link)
+  }
+  for (const link of ['javascript:alert(1)', 'https://user:pass@example.org/register', ' https://example.org/register']) {
+    writeFileSync(path, original.replace('https://www.meetup.com/lansing-codes-meetup/', link))
+    assert.throws(() => digestContext('2026-11', listEventFiles(dir), opts),
+      (error) => error.message.includes(path) && /registration_link.*HTTP\(S\)/.test(error.message))
+  }
+})
+
 test('adds the card image only when the PNG exists in the cards dir', () => {
   const dir = tempEvents('approved')
   const cards = join(dir, 'cards')
@@ -185,4 +200,13 @@ test('Around town lists calendar events, skipping ones already featured', async 
 
   const none = digest('2026-11', files, opts)
   assert.doesNotMatch(none.html + none.text, /Around town/)
+})
+
+test('digest rejects unsafe Around town links before rendering anchors', () => {
+  const files = listEventFiles(tempEvents('approved'))
+  for (const url of ['javascript:alert(1)', 'https://user:pass@example.org/', '']) {
+    const aroundTown = [{ startTime: NOV_6_3PM, name: 'Unsafe event', group: 'AI', venue: '', url }]
+    assert.throws(() => digest('2026-11', files, { ...opts, aroundTown }),
+      /Around town event "Unsafe event": url: expected an HTTP\(S\) URL without credentials/)
+  }
 })
